@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>KL</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.5.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="stilus.css">
+</head>
+<body>
+  <div class="container">
+    <h1 class="mt-5 mb-4">Lámpák on/off</h1>
+    <div id="grid">
+      <div class="row">
+        <div class="col">
+          <div class="light" id="lampa1"></div>
+        </div>
+        <div class="col">
+          <div class="light" id="lampa2"></div>
+        </div>
+        <div class="col">
+          <div class="light" id="lampa3"></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="light" id="lampa4"></div>
+        </div>
+        <div class="col">
+          <div class="light" id="lampa5"></div>
+        </div>
+        <div class="col">
+          <div class="light" id="lampa6"></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="light" id="lampa7"></div>
+        </div>
+        <div class="col">
+          <div class="light" id="lampa8"></div>
+        </div>
+        <div class="col">
+          <div class="light" id="light9"></div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-5">
+      <p>Hányszor klikkelt: <span id="klikkszamol">0</span></p>
+      <p>Hány lámpa ég: <span id="lampanumid">0</span></p>
+    </div>
+  </div>
+
+  <script>
+    //nem megy külső .js olvasás
+    class Lampak {
+      constructor(elem, klikkelem, lampaid) {
+        this.elem = elem;
+        this.allapot = false;
+        this.klikkelem = klikkelem;
+        this.lampaid = lampaid;
+        this.klikkszamol = 0;
+        this.elem.addEventListener('click', this.nyom.bind(this));
+      }
+      nyom() {
+        this.allapot = !this.allapot;
+        this.frissit();
+        // bejárja a klikket
+        this.klikkszamol++;
+        this.klikkelem.textContent = this.klikkszamol;
+        // indexe a classnak
+        const index = Array.from(document.getElementsByClassName('light')).indexOf(this.elem);
+        const elottelampa = lights[index - 1];
+        const kovetlampa = lights[index + 1];
+        if (elottelampa && this.allapot) {
+            elottelampa.vilagit();
+        }
+        if (kovetlampa && this.allapot) {
+            kovetlampa.vilagit();
+        }
+        this.lampafrissit();
+      }
+      vilagit() {
+        this.allapot = true;
+        this.frissit();
+      }
+      frissit() {
+        if (this.allapot) {
+          this.elem.classList.add('tolt');
+        } else {
+          this.elem.classList.remove('tolt');
+        }
+      }
+      lampafrissit() {
+        let i = 0;
+        for (const lamp of lights) {
+          if (lamp.allapot) {
+            i++;
+          }
+        }
+        this.lampaid.textContent = i;
+      }
+    }
+
+    const lights = [];
+    const lightarolo = document.getElementsByClassName('light');
+    const klikkelem = document.getElementById('klikkszamol');
+    const lampaid = document.getElementById('lampanumid');
+    
+    for (let i = 0; i < lightarolo.length; i++) {
+      const lamp = new Lampak(lightarolo[i], klikkelem, lampaid);
+      lights.push(lamp);
+    }
+  </script>
+</body>
+</html>
